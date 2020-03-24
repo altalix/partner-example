@@ -86,7 +86,7 @@ export class Backend {
     const b64Signature = this.encoder.u8ArrayBufferToB64(signature);
 
     // Perform URL Encoding
-    const url = new URL(this.appUrl);
+    const url = new URL(`${this.appUrl}/partners/transaction-create`);
     url.searchParams.set("payload", b64Payload);
     url.searchParams.set("signature", b64Signature);
 
