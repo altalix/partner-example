@@ -10,7 +10,7 @@ export enum FixedSideEnum {
   SELL = 'SELL'
 }
 
-interface Rate {
+interface RateResponse {
   symbol: string;
   fixed_side: FixedSideEnum;
   buy_volume: number;
@@ -49,17 +49,16 @@ export class Client {
     token: ClientRateToken,
     buyCurrency: string,
     sellVolume: number,
-  ): Promise<Rate> {
+  ): Promise<RateResponse> {
     // TODO: We should retreive this from the currencies endpoint to get the
     // correct code
     const symbol = `${buyCurrency}EUR`
-    return axios.get<Rate>(
+    return axios.get<RateResponse>(
       `${this.apiUrl}/rates`,
       {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
-          'Access-Control-Allow-Origin': '*' // TODO: Can I now remove this?
         },
         params: {
           symbol,

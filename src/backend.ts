@@ -91,11 +91,9 @@ export class Backend {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${keys.apiKey}`,
-          'Access-Control-Allow-Origin': '*' // TODO: Can I now remove this?
         }
       }
     ).then(resp => {
-      console.log("got resp: "+ resp)
       return resp.data['access_token']
     });
   }
