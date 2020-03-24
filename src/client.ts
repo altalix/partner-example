@@ -31,7 +31,7 @@ export class Client {
     return {
       sellCurrency: "EUR",
       buyCurrency: "ETH",
-      sellAmount : 25,
+      sellAmount: 25,
       address: "0x093a919323d808d08bd7E72E3dFE0666BeB8D91E",
     };
   }

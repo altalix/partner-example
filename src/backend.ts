@@ -7,8 +7,8 @@ type PrivateKeyId = string;
 type ISODateString = string;
 export type ClientRateToken = string;
 interface SigningKey {
-  id: PrivateKeyId
-  pkcs8: PrivateKey
+  id: PrivateKeyId;
+  pkcs8: PrivateKey;
 }
 
 export interface Keys {
@@ -18,14 +18,14 @@ export interface Keys {
 }
 
 interface PayloadParams {
-  sell_currency: string
-  buy_currency: string
-  buy_amount?: number
-  sell_amount?: number
-  address: string
-  partner_id: string
-  key_id: string
-  created_at: ISODateString,
+  sell_currency: string;
+  buy_currency: string;
+  buy_amount?: number;
+  sell_amount?: number;
+  address: string;
+  partner_id: string;
+  key_id: string;
+  created_at: ISODateString;
 }
 
 export interface ClientSigningRequest {
@@ -37,7 +37,7 @@ export interface ClientSigningRequest {
 }
 
 interface TokenCreatedResponse {
-  access_token: ClientRateToken,
+  access_token: ClientRateToken;
 }
 
 function addMinutes(date: Date, minutes: number): Date {
@@ -46,7 +46,7 @@ function addMinutes(date: Date, minutes: number): Date {
 
 export class Backend {
   private encoder: Encoder;
-  private keyTool: KeyTools
+  private keyTool: KeyTools;
   private apiUrl: string;
   private appUrl: string;
 
@@ -61,7 +61,10 @@ export class Backend {
   }
 
   async getPrivateKey(keys: Keys): Promise<CryptoKey> {
-    return this.keyTool.importPrivateRSAKey(keys.signingKey.pkcs8, keys.algorithm);
+    return this.keyTool.importPrivateRSAKey(
+      keys.signingKey.pkcs8,
+      keys.algorithm
+    );
   }
 
   async generateSignedCreateTransactionURL(
@@ -72,7 +75,11 @@ export class Backend {
     const privateKey = await this.getPrivateKey(keys);
 
     // Generate string encoded json
-    const json = this.generateJsonParams(clientSigningRequest, this.partnerId, keys.signingKey.id);
+    const json = this.generateJsonParams(
+      clientSigningRequest,
+      this.partnerId,
+      keys.signingKey.id
+    );
     const stringifiedJson = JSON.stringify(json);
 
     // Create buffer that can be signed (almost all browsers are utf-16 encoded)
@@ -110,11 +117,15 @@ export class Backend {
         }
       )
       .then((resp) => {
-        return resp.data.access_token
+        return resp.data.access_token;
       });
   }
 
-  private generateJsonParams(req: ClientSigningRequest, partnerId: string, privateKeyId: PrivateKeyId): PayloadParams {
+  private generateJsonParams(
+    req: ClientSigningRequest,
+    partnerId: string,
+    privateKeyId: PrivateKeyId
+  ): PayloadParams {
     const params = {
       sell_currency: req.sellCurrency,
       buy_currency: req.buyCurrency,
@@ -123,12 +134,12 @@ export class Backend {
       key_id: privateKeyId,
       created_at: new Date().toISOString(),
     };
-    const fixedAmountParam = this.generateFixedAmountParam(req)
+    const fixedAmountParam = this.generateFixedAmountParam(req);
 
     return {
       ...params,
-      ...fixedAmountParam
-    }
+      ...fixedAmountParam,
+    };
   }
 
   private generateFixedAmountParam(req: ClientSigningRequest) {
