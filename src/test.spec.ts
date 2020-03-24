@@ -29,7 +29,7 @@ describe("Backend", () => {
     const userToken = await backend.generateUserRateToken(partnerSecretKeys);
 
     // Client creates parameters to get the rate from Altalix
-    const rate = client.getRate(userToken, "ETH", 25);
+    const rate = await client.getRate(userToken, "ETH", 25);
 
     // TODO: validate expected parameters exist
     expect(rate).toBeTruthy();
