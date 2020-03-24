@@ -1,13 +1,13 @@
-import axios from 'axios';
-import { ClientSigningRequest, ClientRateToken } from './backend';
+import axios from "axios";
+import { ClientSigningRequest, ClientRateToken } from "./backend";
 
-function addMinutes(date:Date, minutes: number): Date {
-  return new Date(date.getTime() + minutes*60000);
+function addMinutes(date: Date, minutes: number): Date {
+  return new Date(date.getTime() + minutes * 60000);
 }
 
 export enum FixedSideEnum {
-  BUY = 'BUY',
-  SELL = 'SELL'
+  BUY = "BUY",
+  SELL = "SELL",
 }
 
 interface RateResponse {
@@ -20,23 +20,20 @@ interface RateResponse {
 }
 
 export class Client {
-
   private apiUrl: string;
 
-  constructor(
-    private baseUrl = 'staging.altalix.com'
-  ){
-    this.apiUrl = `https://app.${this.baseUrl}/api`
+  constructor(private baseUrl = "staging.altalix.com") {
+    this.apiUrl = `https://app.${this.baseUrl}/api`;
   }
 
   generateSigningRequest(): ClientSigningRequest {
     // TODO: Somewhere inside the UI - grab these details
     return {
-      sellCurrency: 'EUR',
-      buyCurrency: 'ETH',
+      sellCurrency: "EUR",
+      buyCurrency: "ETH",
       buyAmount: 3,
-      address: '0x093a919323d808d08bd7E72E3dFE0666BeB8D91E'
-    }
+      address: "0x093a919323d808d08bd7E72E3dFE0666BeB8D91E",
+    };
   }
 
   async getPartnerRateToken(): Promise<ClientRateToken> {
@@ -48,25 +45,24 @@ export class Client {
   async getRate(
     token: ClientRateToken,
     buyCurrency: string,
-    sellVolume: number,
+    sellVolume: number
   ): Promise<RateResponse> {
     // TODO: We should retreive this from the currencies endpoint to get the
     // correct code
-    const symbol = `${buyCurrency}EUR`
-    return axios.get<RateResponse>(
-      `${this.apiUrl}/rates`,
-      {
+    const symbol = `${buyCurrency}EUR`;
+    return axios
+      .get<RateResponse>(`${this.apiUrl}/rates`, {
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         params: {
           symbol,
-          sell_volume: sellVolume
-        }
-      }
-    ).then(rate => {
-      return rate.data;
-    })
+          sell_volume: sellVolume,
+        },
+      })
+      .then((rate) => {
+        return rate.data;
+      });
   }
 }

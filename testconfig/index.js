@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
 /**
-* Load app configurations
-*/
+ * Load app configurations
+ */
 
-var configSource = process.env.NODE_ENV || 'development';
-module.exports = require('./env/' + configSource);
+var configSource = process.env.NODE_ENV || "development";
+module.exports = require("./env/" + configSource);

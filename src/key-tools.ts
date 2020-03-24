@@ -1,5 +1,5 @@
 /* tslint:disable:max-classes-per-file */
-export type AlgoName = 'RSASSA-PKCS1-v1_5';
+export type AlgoName = "RSASSA-PKCS1-v1_5";
 export type U8String = string;
 export type U16String = string;
 export type UInt8Buffer = ArrayBuffer;
@@ -8,7 +8,7 @@ export class Encoder {
   constructor(private window: Window) {}
 
   u8ArrayBufferToB64(buffer: UInt8Buffer) {
-    let binary = '';
+    let binary = "";
     const bytes = new Uint8Array(buffer);
     const len = bytes.byteLength;
     for (let i = 0; i < len; i++) {
@@ -46,15 +46,15 @@ export class KeyTools {
     const keyData = this.encoder.b64ToUInt8Buffer(spki);
 
     return this.crypto.subtle.importKey(
-      'spki',
+      "spki",
       keyData,
       {
         // these are the algorithm options
         name,
-        hash: { name: 'SHA-256' }
+        hash: { name: "SHA-256" },
       },
       false,
-      ['verify']
+      ["verify"]
     );
   }
 
@@ -69,7 +69,7 @@ export class KeyTools {
 
     return this.crypto.subtle
       .verify(name, publicKey, signature, data)
-      .then(val => {
+      .then((val) => {
         return val;
       });
   }
@@ -77,8 +77,8 @@ export class KeyTools {
   // TODO Add better typing
   extractPemContentsFromPublicKey(pem: string): string {
     // fetch the part of the PEM string between header and footer
-    const pemHeader = '-----BEGIN PUBLIC KEY-----';
-    const pemFooter = '-----END PUBLIC KEY-----';
+    const pemHeader = "-----BEGIN PUBLIC KEY-----";
+    const pemFooter = "-----END PUBLIC KEY-----";
     return pem.substring(pemHeader.length, pem.length - pemFooter.length);
   }
 
@@ -86,15 +86,15 @@ export class KeyTools {
     const keyData = this.encoder.b64ToUInt8Buffer(pkcs8);
 
     return this.crypto.subtle.importKey(
-      'pkcs8',
+      "pkcs8",
       keyData,
       {
         // these are the algorithm options
         name,
-        hash: { name: 'SHA-256' }
+        hash: { name: "SHA-256" },
       },
       false,
-      ['sign']
+      ["sign"]
     );
   }
 
@@ -102,6 +102,6 @@ export class KeyTools {
     privateKey: CryptoKey,
     data: UInt8Buffer
   ): Promise<UInt8Buffer> {
-    return this.crypto.subtle.sign('RSASSA-PKCS1-v1_5', privateKey, data);
+    return this.crypto.subtle.sign("RSASSA-PKCS1-v1_5", privateKey, data);
   }
 }

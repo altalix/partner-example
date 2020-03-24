@@ -2,32 +2,30 @@
 // https://karma-runner.github.io/1.0/config/configuration-file.html
 //
 //
-var testConfig = require('./testconfig');
+var testConfig = require("./testconfig");
 
 module.exports = function (config) {
   config.set({
-    basePath: '',
-    files: [
-      "src/**/*.ts"
-    ],
+    basePath: "",
+    files: ["src/**/*.ts"],
     preprocessors: {
-      "**/*.ts": "karma-typescript"
+      "**/*.ts": "karma-typescript",
     },
     frameworks: ["jasmine", "karma-typescript"],
     plugins: [
-      require('karma-jasmine'),
-      require('karma-chrome-launcher'),
-      require('karma-jasmine-html-reporter'),
-      require('karma-coverage-istanbul-reporter'),
-      require('karma-typescript')
+      require("karma-jasmine"),
+      require("karma-chrome-launcher"),
+      require("karma-jasmine-html-reporter"),
+      require("karma-coverage-istanbul-reporter"),
+      require("karma-typescript"),
     ],
     client: {
-      clearContext: false
+      clearContext: false,
     },
     coverageIstanbulReporter: {
-      dir: require('path').join(__dirname, './coverage/app'),
-      reports: ['html', 'lcovonly', 'text-summary'],
-      fixWebpackSourcePaths: true
+      dir: require("path").join(__dirname, "./coverage/app"),
+      reports: ["html", "lcovonly", "text-summary"],
+      fixWebpackSourcePaths: true,
     },
     customLaunchers: testConfig.karma.customLaunchers,
     reporters: testConfig.karma.reporters,
@@ -37,7 +35,6 @@ module.exports = function (config) {
     autoWatch: testConfig.karma.autoWatch,
     browsers: testConfig.karma.browsers,
     singleRun: testConfig.karma.singleRun,
-    restartOnFileChange: true
+    restartOnFileChange: true,
   });
 };
-
