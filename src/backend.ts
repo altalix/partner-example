@@ -3,13 +3,18 @@ import axios from "axios";
 
 type ApiKey = string;
 type PrivateKey = string;
+type PrivateKeyId = string;
 type ISODateString = string;
 export type ClientRateToken = string;
+interface SigningKey {
+  id: PrivateKeyId
+  pkcs8: PrivateKey
+}
 
 export interface Keys {
   algorithm: AlgoName;
   apiKey: ApiKey;
-  pkcs8: PrivateKey;
+  signingKey: SigningKey;
 }
 
 interface PayloadParams {
@@ -19,6 +24,7 @@ interface PayloadParams {
   sell_amount?: number
   address: string
   partner_id: string
+  key_id: string
   created_at: ISODateString,
 }
 
@@ -40,7 +46,7 @@ function addMinutes(date: Date, minutes: number): Date {
 
 export class Backend {
   private encoder: Encoder;
-  private keyTool: KeyTools;
+  private keyTool: KeyTools
   private apiUrl: string;
   private appUrl: string;
 
@@ -55,7 +61,7 @@ export class Backend {
   }
 
   async getPrivateKey(keys: Keys): Promise<CryptoKey> {
-    return this.keyTool.importPrivateRSAKey(keys.pkcs8, keys.algorithm);
+    return this.keyTool.importPrivateRSAKey(keys.signingKey.pkcs8, keys.algorithm);
   }
 
   async generateSignedCreateTransactionURL(
@@ -66,7 +72,7 @@ export class Backend {
     const privateKey = await this.getPrivateKey(keys);
 
     // Generate string encoded json
-    const json = this.generateJsonParams(clientSigningRequest, this.partnerId);
+    const json = this.generateJsonParams(clientSigningRequest, this.partnerId, keys.signingKey.id);
     const stringifiedJson = JSON.stringify(json);
 
     // Create buffer that can be signed (almost all browsers are utf-16 encoded)
@@ -108,12 +114,13 @@ export class Backend {
       });
   }
 
-  private generateJsonParams(req: ClientSigningRequest, partnerId: string): PayloadParams {
+  private generateJsonParams(req: ClientSigningRequest, partnerId: string, privateKeyId: PrivateKeyId): PayloadParams {
     const params = {
       sell_currency: req.sellCurrency,
       buy_currency: req.buyCurrency,
       address: req.address,
       partner_id: partnerId,
+      key_id: privateKeyId,
       created_at: new Date().toISOString(),
     };
     const fixedAmountParam = this.generateFixedAmountParam(req)
