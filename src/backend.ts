@@ -9,6 +9,7 @@ export type ClientRateToken = string;
 export interface Keys {
   algorithm: AlgoName;
   apiKey: ApiKey;
+  keyId: string;
   pkcs8: PrivateKey;
 }
 
@@ -46,12 +47,12 @@ export class Backend {
 
   constructor(
     private partnerId: string,
-    private baseUrl = "staging.altalix.com"
+    private baseUrl = "app.sandbox.altalix.com"
   ) {
     this.encoder = new Encoder(window);
     this.keyTool = new KeyTools(window.crypto, this.encoder);
-    this.apiUrl = `https://app.${this.baseUrl}/api`;
-    this.appUrl = `https://app.${this.baseUrl}`;
+    this.apiUrl = `https://${this.baseUrl}/api`;
+    this.appUrl = `https://${this.baseUrl}`;
   }
 
   async getPrivateKey(keys: Keys): Promise<CryptoKey> {
@@ -66,7 +67,7 @@ export class Backend {
     const privateKey = await this.getPrivateKey(keys);
 
     // Generate string encoded json
-    const json = this.generateJsonParams(clientSigningRequest, this.partnerId);
+    const json = this.generateJsonParams(clientSigningRequest, this.partnerId, keys.keyId);
     const stringifiedJson = JSON.stringify(json);
 
     // Create buffer that can be signed (almost all browsers are utf-16 encoded)
@@ -108,12 +109,13 @@ export class Backend {
       });
   }
 
-  private generateJsonParams(req: ClientSigningRequest, partnerId: string): PayloadParams {
+  private generateJsonParams(req: ClientSigningRequest, partnerId: string, keyId: string): PayloadParams {
     const params = {
       sell_currency: req.sellCurrency,
       buy_currency: req.buyCurrency,
       address: req.address,
       partner_id: partnerId,
+      key_id: keyId,
       created_at: new Date().toISOString(),
     };
     const fixedAmountParam = this.generateFixedAmountParam(req)

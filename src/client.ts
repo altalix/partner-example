@@ -22,7 +22,7 @@ interface RateResponse {
 export class Client {
   private apiUrl: string;
 
-  constructor(private baseUrl = "staging.altalix.com") {
+  constructor(private baseUrl = "sandbox.altalix.com") {
     this.apiUrl = `https://app.${this.baseUrl}/api`;
   }
 
